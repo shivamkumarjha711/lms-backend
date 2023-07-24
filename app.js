@@ -3,7 +3,8 @@ import cors from'cors';
 import cookieParser from'cookie-parser';
 import { config } from'dotenv';
 import morgan from 'morgan';
-import userRoutes from './routes/user.routes.js'
+import userRoutes from './routes/user.routes.js';
+import courseRoutes from './routes/course.routes.js';
 import errorMiddleware from './middlewares/error.middleware.js';
 config();   // Config .env
 
@@ -27,6 +28,7 @@ app.use('/ping', function(req, res) {
 
 // Routes of 3 Module 
 app.use('/api/v1/user', userRoutes)
+app.use('/api/v1/courses', courseRoutes)
 
 app.all('*', (req, res) => {
     res.status(404).send('OOPS!! page not found')
