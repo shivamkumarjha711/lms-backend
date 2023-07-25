@@ -6,7 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from 'crypto';
 
 const cookiesOptions = {
-    maxAge: 7 * 24 * 60 * 60 * 1000,    //7 days
+    maxAge: 7*24*60*60*1000,    //7 days
     httpOnly: true,      // For security purpose
     secure: true
 };
@@ -69,8 +69,9 @@ const register = async (req, res, next) => {
     user.password = undefined;                          //7. undefine user password 
 
     const token = await user.generateJWTToken();         // 8. if user register successfully create a token for user to not login again and again
+    // console.log(token);
 
-    res.cookie('token', token, cookiesOptions)          // 9. Storing this token in cookie
+    res.cookie('token', token, cookiesOptions);         // 9. Storing this token in cookie
 
     res.status(201).json({                              // 10. If Registration successfully show this message
         success: true,
@@ -96,7 +97,6 @@ const login = async (req, res, next) => {
         }
     
         const token = await user.generateJWTToken();        // 5. if user login successfully create a token for user to not login again and again
-
 
         user.password = undefined;                          // 6. undefine user password 
     
