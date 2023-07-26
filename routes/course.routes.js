@@ -9,8 +9,8 @@ const router = new Router();
 router.route('/')
     .get(getAllCourses)
     .post(
-        //isLoggedin,
-        //authorizedRole('ADMIN'),
+        isLoggedin,
+        authorizedRole('ADMIN'),
         upload.single('thumbnail'),
         createCourse);
 
@@ -27,8 +27,8 @@ router.route('/:id')
         removeCourse
     )
     .post(
-        // isLoggedin,
-        // authorizedRole('ADMIN'),
+        isLoggedin,
+        authorizedRole('ADMIN'),
         upload.single('lecture'),
         addLectureByCourseId
     );
