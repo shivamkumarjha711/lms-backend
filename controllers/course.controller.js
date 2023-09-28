@@ -171,13 +171,18 @@ const addLectureByCourseId = async (req, res, next) => {
         const lectureData = {
             title,
             description,
-            lecture: {}
+            lecture: {
+                public_id: "dummy",
+                secure_id: "dummy"
+            },
         }
     
         if (req.file) {
             try {
                 const result = await cloudinary.v2.uploader.upload(req.file.path, {
-                folder: 'lms'
+                    folder: 'lms',
+                    chunk_size: 50000000000,
+                    resource_type: "video",
                 });
                 // console.log(JSON.stringify(result));
                 if (result) {
@@ -212,6 +217,42 @@ const addLectureByCourseId = async (req, res, next) => {
     }
 };
 
+const removeLectureFromCourse = async (req, res, next) => {
+    const {courseId, lectureId} = req.query;
+
+    console.log(courseId);
+    console.log(lectureId);
+
+    if (!courseId) {
+        return next(
+            new AppError('Course ID is required', 400)
+        )
+    }
+
+    if (!lectureId) {
+        return next(
+            new AppError('Lecture ID is required', 400)
+        )
+    }
+
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+        return next(
+            new AppError('Invalid Course ID or course dose not exist', 400)
+        )
+    }
+
+    const lectures = course.lectures;
+
+    if (!lectures) {
+        return next(
+            new AppError('Lectures are not found in Course', 400)
+        )
+    }
+
+    const lecture = lectures.findIndex(lectureId);
+}
 
 export {
     getAllCourses,
@@ -219,5 +260,6 @@ export {
     createCourse,
     updateCourse,
     removeCourse,
-    addLectureByCourseId
+    addLectureByCourseId,
+    removeLectureFromCourse
 };

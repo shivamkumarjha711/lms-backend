@@ -39,6 +39,7 @@ export const buySubscription = async (req, res, next) => {
             plan_id: process.env.RAZORPAY_PLAN_ID,
             customer_notify: 1
         });
+        console.log(subscription);
     
         user.subscription.id = subscription.id;
         user.subscription.status = subscription.status;

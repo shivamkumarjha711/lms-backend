@@ -92,7 +92,7 @@ const login = async (req, res, next) => {
             email
         }).select('+password');
     
-        if (!user || !user.comparePassword(password)) {     // 4. If email Or, password not match thorw message
+        if (!user && !user.comparePassword(password)) {     // 4. If email Or, password not match thorw message
             return next(new AppError('Email or password does not match', 400));
         }
     
@@ -126,10 +126,12 @@ const logout = (req, res) => {                  // 1. Delete token from cookie O
     })
 };
 
-const getProfile = async (req, res) => {
+const getProfile = async (req, res, next) => {
     try {
-        const userId = req.user.id;                 // 1. Finding user from DB
-        const user = await User.findOne(userId);
+          // 1. Finding user from DB
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        console.log("USER : ", user.fullName);
 
         res.status(200).json({
             success: true,
@@ -244,9 +246,11 @@ const changePassword = async (req, res) => {
     });
 }
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     const { fullName } = req.body;
-    const { id } = req.user.id;
+    console.log("fullName : ", fullName);
+    const id = req.user.id;
+
 
     const user = await User.findById(id);
 
@@ -254,7 +258,7 @@ const updateUser = async (req, res) => {
         return next(new AppError('User does not exist', 400));
     }
 
-    if (req.fullName) {
+    if (fullName) {
         user.fullName = fullName;
     }
 
@@ -284,6 +288,7 @@ const updateUser = async (req, res) => {
     }
 
     await user.save();
+    console.log("USER 22 : ", user.fullName);
 
     res.status(200).json({
         success: true,
